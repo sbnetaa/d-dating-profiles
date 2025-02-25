@@ -1,0 +1,15 @@
+server:
+  port: 8080
+---
+spring:
+  application:
+    name: d-dating-profiles
+  data:
+    mongodb:
+      uri: ${SPRING_MONGODB_URI:mongodb://myUser:myPassword@localhost:27017/d-dating-profiles?authSource=admin}
+      auto-index-creation: true
+      connection-timeout: 10000
+      retry:
+        enabled: true
+  datasource:
+    initialization-mode: always

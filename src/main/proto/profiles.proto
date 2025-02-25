@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option java_package = "ru.terentyev.d_dating_profiles.proto";
+option java_multiple_files = true;
+
+message Profile {
+    string id = 1;
+    string name = 2;
+    int32 age = 3;
+    string description = 4;
+    bool male = 5;
+    repeated Photo photos = 6;
+    repeated Hobby hobbies = 7;
+    repeated Match matches = 8;
+}
+
+message Photo {
+    string id = 1;
+    Profile owner = 2;
+    string url = 3;
+    int32 order = 4;
+}
+
+message Swipe {
+    Profile person1 = 1;
+    Profile person2 = 2;
+    bool choiceOf1 = 3;
+    bool choiceOf2 = 4;
+}
+
+message Match {
+    Profile person1 = 1;
+    Profile person2 = 2;
+    repeated Message dialog = 3;
+}
+
+message Message {
+    Profile who = 1;
+    Profile whom = 2;
+    int32 order = 3;
+}
+
+enum Hobby {
+    TENNIS = 0;
+    BILLIARDS = 1;
+    IT = 2;
+    MUSIC = 3;
+    TRAVELING = 4;
+}
