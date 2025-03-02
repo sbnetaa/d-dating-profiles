@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -15,8 +14,8 @@ import java.util.Set;
 public class Profile extends AbstractEntity {
 
     private String name;
-    private Integer age;
-    private String description;
+    private Integer age = 18;
+    private String aboutMe;
     private String email;
     private Boolean male;
     private Purpose purpose;
@@ -32,6 +31,7 @@ public class Profile extends AbstractEntity {
         LOVE("Любовь"),
         FREE_LOVE("Интимные отношения"),
         EVERYTHING("Всё сразу"),
+        WORK("Работа и помощь"),
         DONT_KNOW("Не знаю");
 
         private final String description;
@@ -41,7 +41,7 @@ public class Profile extends AbstractEntity {
     @Getter
     @Setter
     public static class ProfileSettings {
-        private boolean showBothGenders;
+        private boolean showBothGenders = true;
         private boolean showMale;
         private Integer desiredAgeMin;
         private Integer desiredAgeMax;
