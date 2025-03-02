@@ -32,8 +32,8 @@ public class Profile extends AbstractEntity {
         LOVE("Любовь"),
         FREE_LOVE("Интимные отношения"),
         EVERYTHING("Всё сразу"),
-        WORK("Работа и помощь"),
-        DONT_KNOW("Не знаю");
+        WORK("Работа и помощь");
+//        DONT_KNOW("Не знаю");
 
         private final String description;
     }

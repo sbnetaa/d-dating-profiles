@@ -9,12 +9,12 @@ import ru.terentyev.d_dating_profiles.entities.Profile;
 public class QueryServiceImpl implements QueryService {
 
     @Override
-    public void createNextDeckQuery(Profile profile) {
+    public void updateNextDeckQuery(Profile requester) {
         Query query = new Query();
-        query = addGenderCriteria(query, profile);
-        query = addAgeCriteria(query, profile);
-        query = addPurposeCriteria(query, profile);
-        profile.getSettings().setNextDeckQuery(query);
+        query = addGenderCriteria(query, requester);
+        query = addAgeCriteria(query, requester);
+        query = addPurposeCriteria(query, requester);
+        requester.getSettings().setNextDeckQuery(query);
     }
 
     @Override
@@ -60,6 +60,11 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public Query addPurposeCriteria(Query query, Profile requester) {
         Profile.Settings settings = requester.getSettings();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("showWithMatchingPurposeOnly").is(true)
+                , Criteria.where("purpose").in(Profile.Purpose.EVERYTHING, requester.getPurpose())
+        ));
+
         if (settings.isShowWithMatchingPurposeOnly())
             query.addCriteria(Criteria.where("purpose").in(requester.getPurpose(), Profile.Purpose.EVERYTHING));
 

@@ -1,6 +1,5 @@
 package ru.terentyev.d_dating_profiles.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ public class ProfileServiceImpl implements ProfileService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final QueryService queryService;
 
-    @Autowired
     public ProfileServiceImpl(ProfileRepository profileRepository, ReactiveMongoTemplate reactiveMongoTemplate
             , QueryService queryService) {
         this.profileRepository = profileRepository;
