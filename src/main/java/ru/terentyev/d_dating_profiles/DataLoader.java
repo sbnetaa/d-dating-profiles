@@ -1,7 +1,6 @@
 package ru.terentyev.d_dating_profiles;
 
 import jakarta.annotation.PostConstruct;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -55,7 +54,6 @@ public class DataLoader {
     }
 
 
-    @NotNull
     private Profile getProfile() {
         Profile firstUser = new Profile();
         firstUser.setName("Дмитрий");

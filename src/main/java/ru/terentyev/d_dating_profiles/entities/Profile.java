@@ -45,5 +45,6 @@ public class Profile extends AbstractEntity {
         private boolean showMale;
         private Integer desiredAgeMin;
         private Integer desiredAgeMax;
+        private boolean showWithMatchingPurposeOnly;
     }
 }
