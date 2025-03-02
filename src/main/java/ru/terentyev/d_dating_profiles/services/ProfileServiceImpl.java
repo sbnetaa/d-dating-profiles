@@ -13,21 +13,23 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
     private final QueryService queryService;
+    private final AuthService authService;
 
     public ProfileServiceImpl(ProfileRepository profileRepository, ReactiveMongoTemplate reactiveMongoTemplate
-            , QueryService queryService) {
+            , QueryService queryService, AuthService authService) {
         this.profileRepository = profileRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.queryService = queryService;
+        this.authService = authService;
     }
 
     @Override
-    public Flux<Profile> takeNextDeck(Profile requester) {
+    public Flux<Profile> takeNextDeck() {
         Query query = new Query();
+        Profile requester = authService.getCurrentUser();
         query = queryService.addGenderCriteria(query, requester);
         query = queryService.addAgeCriteria(query, requester);
         query = queryService.addPurposeCriteria(query, requester);
-        return null;
+        return reactiveMongoTemplate.find(query, Profile.class);
     }
-
 }

@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Hobby extends AbstractEntity {
+public class Hobby {
 
     private Integer id;
     @Indexed(unique = true)

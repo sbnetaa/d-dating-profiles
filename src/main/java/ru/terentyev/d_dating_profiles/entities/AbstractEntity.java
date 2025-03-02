@@ -11,7 +11,6 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode
 public abstract class AbstractEntity {
-
     @Id
     protected UUID id;
 }

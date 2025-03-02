@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
-import ru.terentyev.d_dating_profiles.proto.Profile;
+import ru.terentyev.d_dating_profiles.entities.Profile;
 
 import java.util.UUID;
 

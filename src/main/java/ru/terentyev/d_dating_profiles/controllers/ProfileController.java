@@ -18,7 +18,7 @@ public class ProfileController extends AbstractController {
     }
 
     @GetMapping("/nextDeck")
-    public Flux<Profile> getNextDeck(Profile requester) {
-        return profileService.takeNextDeck(requester);
+    public Flux<Profile> getNextDeck() {
+        return profileService.takeNextDeck();
     }
 }

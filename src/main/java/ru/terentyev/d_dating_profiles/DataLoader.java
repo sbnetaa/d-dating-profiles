@@ -14,7 +14,6 @@ import ru.terentyev.d_dating_profiles.entities.Profile;
 import ru.terentyev.d_dating_profiles.repositories.ProfileRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -24,38 +23,39 @@ import java.util.Set;
 @Component
 public class DataLoader {
 
+    private static final Random random = new Random();
     private final int PROFILES_TO_GENERATE = 100;
     private final ProfileRepository profileRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
-    private final Random random;
     private Set<Hobby> hobbies = new HashSet<>();
+    private List<Profile> profiles = new ArrayList<>();
 
-    public DataLoader(ProfileRepository profileRepository, ReactiveMongoTemplate reactiveMongoTemplate
-            , Random random) {
+    public DataLoader(ProfileRepository profileRepository, ReactiveMongoTemplate reactiveMongoTemplate) {
         this.profileRepository = profileRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.random = random;
     }
-
 
     @Async
     @PostConstruct
     public void populateDatabase() {
-        populateHobbies();
-        saveTestProfiles();
+        Mono<Void> hobbiesMono = Mono.fromRunnable(this::createHobbies);
+        Mono<Void> profilesMono = Mono.fromRunnable(this::createTestProfiles);
+        Mono.zip(hobbiesMono, profilesMono).subscribe((tuple) -> {
+            setHobbies();
+            profiles.forEach(reactiveMongoTemplate::save);
+        });
     }
 
-    public void saveTestProfiles(){
+    public void createTestProfiles(){
         Mono<Long> profilesCountMono = reactiveMongoTemplate.count(new Query(), Profile.class);
         profilesCountMono.subscribe((count) -> {
             if (count >= PROFILES_TO_GENERATE) {
                 return;
             }
             saveFirstProfile();
-            generateProfiles(PROFILES_TO_GENERATE - count.intValue() - 1).forEach(reactiveMongoTemplate::save);
+            generateProfiles(PROFILES_TO_GENERATE - count.intValue() - 1); //.forEach(reactiveMongoTemplate::save)
         });
 }
-
 
     public void saveFirstProfile() {
         Mono<Profile> profilesCountMono = reactiveMongoTemplate.findOne(new Query(), Profile.class);
@@ -73,11 +73,10 @@ public class DataLoader {
         }));
     }
 
-    private List<Profile> generateProfiles(int count){
+    private void generateProfiles(int count){
         if (count <= 0) {
-            return Collections.emptyList();
+            return;
         }
-        List<Profile> profiles = new ArrayList<>();
         for (int i = PROFILES_TO_GENERATE - count; i <= PROFILES_TO_GENERATE; i++) {
             Profile profile = new Profile();
             profile.setName("Пользователь" + count);
@@ -87,18 +86,16 @@ public class DataLoader {
             int randomIndex = random.nextInt(0, Profile.Purpose.values().length);
             profile.setPurpose(purposes[randomIndex]);
             profile.setEmail("test" + count + "@mail.com");
-            Hobby[] hobbiesArray = hobbies.toArray(new Hobby[0]);
-            profile.setHobbies(Set.of( // 5 рандомных хобби
-                    hobbiesArray[random.nextInt(0, hobbies.size())],
-                    hobbiesArray[random.nextInt(0, hobbies.size())],
-                    hobbiesArray[random.nextInt(0, hobbies.size())],
-                    hobbiesArray[random.nextInt(0, hobbies.size())],
-                    hobbiesArray[random.nextInt(0, hobbies.size())]
-            ));
             profile.setAboutMe(RandomStringUtils.insecure().next(20));
-
+            Profile.Settings settings = new Profile.Settings();
+            settings.setShowMale(random.nextBoolean());
+            settings.setShowBothGenders(random.nextBoolean());
+            settings.setDesiredAgeMax(profile.getAge() + 10);
+            settings.setDesiredAgeMin(profile.getAge() - 10);
+            settings.setShowWithMatchingPurposeOnly(random.nextBoolean());
+            profile.setSettings(settings);
+            profiles.add(profile);
         }
-        return profiles;
     }
 
 
@@ -120,7 +117,7 @@ public class DataLoader {
     }
 
 
-    public void populateHobbies(){
+    private void createHobbies(){
         Set<Hobby> hobbies = new LinkedHashSet<>();
         hobbies.add(new Hobby(1, "Теннис", "Большой теннис"));
         hobbies.add(new Hobby(2, "Бильярд", "Бильярд"));
@@ -129,5 +126,19 @@ public class DataLoader {
         hobbies.add(new Hobby(5, "Путешествия", "Большой теннис"));
         hobbies.forEach(reactiveMongoTemplate::save);
         this.hobbies = hobbies;
+    }
+
+    private void setHobbies(){
+        Hobby[] hobbiesArray = hobbies.toArray(new Hobby[0]);
+        final int hobbiesSize = hobbies.size();
+        for (Profile profile : profiles) {
+            profile.setHobbies(Set.of( // 5 рандомных хобби
+                    hobbiesArray[random.nextInt(0, hobbiesSize)],
+                    hobbiesArray[random.nextInt(0, hobbiesSize)],
+                    hobbiesArray[random.nextInt(0, hobbiesSize)],
+                    hobbiesArray[random.nextInt(0, hobbiesSize)],
+                    hobbiesArray[random.nextInt(0, hobbiesSize)]
+            ));
+        }
     }
 }
