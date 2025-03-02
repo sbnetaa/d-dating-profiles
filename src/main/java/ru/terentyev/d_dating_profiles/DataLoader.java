@@ -62,7 +62,7 @@ public class DataLoader {
         firstUser.setMale(true);
         firstUser.setAboutMe("Люблю свою работу и рок.");
         firstUser.setPurpose(Profile.Purpose.LOVE);
-        Profile.ProfileSettings settings = new Profile.ProfileSettings();
+        Profile.Settings settings = new Profile.Settings();
         settings.setDesiredAgeMax(50);
         settings.setDesiredAgeMin(20);
         settings.setShowBothGenders(false);

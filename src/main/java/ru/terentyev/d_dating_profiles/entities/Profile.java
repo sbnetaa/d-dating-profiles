@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Profile extends AbstractEntity {
 //    private List<Photo> photos = new ArrayList<>();
     private Set<Hobby> hobbies = new LinkedHashSet<>();
 //    private List<Match> matches = new ArrayList<>();
-    private ProfileSettings settings;
+    private Settings settings;
 
     @AllArgsConstructor
     @Getter
@@ -40,11 +41,12 @@ public class Profile extends AbstractEntity {
     @Document
     @Getter
     @Setter
-    public static class ProfileSettings {
+    public static class Settings {
         private boolean showBothGenders = true;
         private boolean showMale;
         private Integer desiredAgeMin;
         private Integer desiredAgeMax;
         private boolean showWithMatchingPurposeOnly;
+        private Query nextDeckQuery;
     }
 }
